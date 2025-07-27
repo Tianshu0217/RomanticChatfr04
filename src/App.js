@@ -1,23 +1,69 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, useRef } from "react";
+import "./App.css";
 
 function App() {
+  const [messages, setMessages] = useState([
+    {
+      sender: "WittyRomanceAI",
+      text:
+        "Hello, I’m your AI companion, here to provide attentive, thoughtful support and clear guidance. You can share your recent challenges or concerns with me, and I will respond with professionalism, empathy, and practical insights. How can I assist you today?",
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const chatBoxRef = useRef(null);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMsg = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+
+    try {
+      const res = await fetch("http://localhost:5001/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input })
+      });
+
+      const data = await res.json();
+      const botMsg = {
+        sender: "WittyRomanceAI",
+        text: data.response || "No response from server",
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        { sender: "WittyRomanceAI", text: "Oops! Server error." },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+  }, [messages]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Chat with AI</h1>
+      <div className="chat-box" ref={chatBoxRef}>
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`message ${msg.sender}`}>
+            <strong>{msg.sender === "user" ? "You" : "WittyRomanceAI"}:</strong> {msg.text}
+          </div>
+        ))}
+      </div>
+      <div className="input-row">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          placeholder="Type your message..."
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
     </div>
   );
 }
