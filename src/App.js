@@ -25,11 +25,10 @@ function App() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message: input })  // ✅ FIXED
       });
-      
 
-      const data = await res.json();
+      const data = await response.json();  // ✅ FIXED
       const botMsg = {
         sender: "WittyRomanceAI",
         text: data.response || "No response from server",
