@@ -4,9 +4,9 @@ import "./App.css";
 function App() {
   const [messages, setMessages] = useState([
     {
-      sender: "WittyRomanceAI",
+      sender: "AI",
       text:
-        "Hello, I’m your AI companion, here to provide attentive, thoughtful support and clear guidance. You can share your recent challenges or concerns with me, and I will respond with professionalism, empathy, and practical insights. How can I assist you today?",
+        "Welcome back! Let’s continue our chat.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -30,14 +30,14 @@ function App() {
 
       const data = await response.json();  // ✅ FIXED
       const botMsg = {
-        sender: "WittyRomanceAI",
+        sender: "AI",
         text: data.response || "No response from server",
       };
       setMessages((prev) => [...prev, botMsg]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { sender: "WittyRomanceAI", text: "Oops! Server error." },
+        { sender: "AI", text: "Oops! Server error." },
       ]);
     }
   };
@@ -52,7 +52,7 @@ function App() {
       <div className="chat-box" ref={chatBoxRef}>
         {messages.map((msg, idx) => (
           <div key={idx} className={`message ${msg.sender}`}>
-            <strong>{msg.sender === "user" ? "You" : "WittyRomanceAI"}:</strong> {msg.text}
+            <strong>{msg.sender === "user" ? "You" : "AI"}:</strong> {msg.text}
           </div>
         ))}
       </div>
