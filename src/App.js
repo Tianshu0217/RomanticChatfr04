@@ -48,7 +48,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Chat with AI</h1>
+      <h1>Let's chat</h1>
       <div className="chat-box" ref={chatBoxRef}>
         {messages.map((msg, idx) => (
           <div key={idx} className={`message ${msg.sender}`}>
